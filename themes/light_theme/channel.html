@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Channel Dump: #{{ channel_name }}</title>
+    <style>
+        body{background-color:#f2f3f5;color:#2e3338;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;margin:0;padding:20px}
+        .chat-container{max-width:800px;margin:auto;background-color:#fff;border-radius:8px;padding:20px;border:1px solid #e3e5e8}
+        .header{font-size:24px;font-weight:bold;color:#060607;border-bottom:1px solid #e3e5e8;padding-bottom:15px;margin-bottom:20px}
+        .header .channel-icon{color:#4f5660;margin-right:8px}
+        .message{display:flex;padding:10px 0;border-top:1px solid #e3e5e8}
+        .message:first-of-type{border-top:none}
+        .avatar{width:40px;height:40px;border-radius:50%;margin-right:15px;flex-shrink:0}
+        .avatar.placeholder{background-color:#7289da}
+        .message-content{display:flex;flex-direction:column;width:100%}
+        .message-header{display:flex;align-items:baseline;margin-bottom:4px}
+        .author-name{font-weight:500;color:#060607;margin-right:8px}
+        .timestamp{font-size:12px;color:#747f8d}
+        .text-content{white-space:pre-wrap;word-wrap:break-word;line-height:1.4}
+        .text-content p{margin:0 0 5px} .text-content p:last-child{margin-bottom:0}
+        blockquote{background-color:#f2f3f5;border-left:4px solid #e3e5e8;padding:10px;margin:10px 0 10px 0;border-radius:4px}
+        code{background-color:#f2f3f5;padding:2px 4px;font-size:85%;border-radius:3px;font-family:Consolas,monaco,monospace}
+        pre{background-color:#f2f3f5;padding:10px;border-radius:4px;overflow-x:auto}
+        pre code{padding:0;font-size:100%;background-color:transparent}
+        .spoiler{background-color:#b9bbbe;color:transparent;cursor:pointer;padding:0 4px;border-radius:3px}
+        .spoiler:hover,.spoiler:focus{color:#2e3338}
+        .attachments{margin-top:8px}
+        .attachment-image{max-width:400px;max-height:300px;border-radius:4px;margin-top:5px}
+        .file-attachment{background-color:#f2f3f5;border:1px solid #e3e5e8;border-radius:3px;padding:10px;margin-top:5px;display:inline-block}
+        .file-attachment a{color:#0068e0;text-decoration:none}
+        .embed{background-color:#f2f3f5;border-left:4px solid #e3e5e8;border-radius:4px;padding:12px;margin-top:8px;max-width:520px}
+        .embed-title{font-weight:bold;margin-bottom:8px}
+        .embed-title a{color:#0068e0;text-decoration:none}
+        .embed-description{font-size:14px;line-height:1.5}
+        .embed-image{max-width:100%;border-radius:4px;margin-top:10px}
+        .embed-thumbnail{max-width:80px;max-height:80px;border-radius:4px;float:right;margin-left:10px}
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="header"><span class="channel-icon">#</span>{{ channel_name }}</div>
+        {% for msg in messages %}
+        <div class="message">
+            {% if msg.author_avatar %}
+                <img src="{{ msg.author_avatar }}" alt="Avatar" class="avatar">
+            {% else %}
+                <div class="avatar placeholder"></div>
+            {% endif %}
+            <div class="message-content">
+                <div class="message-header">
+                    <span class="author-name">{{ msg.author_name }}</span>
+                    <span class="timestamp">{{ msg.timestamp.strftime('%d.%m.%Y %H:%M') }}</span>
+                </div>
+                {% if msg.content %}
+                    <div class="text-content">{{ msg.content | safe }}</div>
+                {% endif %}
+                {% if msg.attachments %}
+                    <div class="attachments">
+                        {% for attachment in msg.attachments %}
+                            {% if attachment.is_image %}
+                                <a href="{{ attachment.url }}" target="_blank"><img src="{{ attachment.url }}" alt="Image {{ attachment.filename }}" class="attachment-image"></a>
+                            {% else %}
+                                <div class="file-attachment"><a href="{{ attachment.url }}" target="_blank" download>📄 {{ attachment.filename }}</a></div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% if msg.embeds %}
+                    <div class="embeds">
+                        {% for embed in msg.embeds %}
+                            <div class="embed">
+                                {% if embed.thumbnail %}
+                                    <img src="{{ embed.thumbnail.url }}" alt="Embed's thumbnail" class="embed-thumbnail">
+                                {% endif %}
+                                {% if embed.title %}
+                                    <div class="embed-title">
+                                        {% if embed.url %}<a href="{{ embed.url }}" target="_blank">{{ embed.title }}</a>{% else %}{{ embed.title }}{% endif %}
+                                    </div>
+                                {% endif %}
+                                {% if embed.description %}
+                                    <div class="embed-description">{{ embed.description }}</div>
+                                {% endif %}
+                                {% if embed.image %}
+                                     <a href="{{ embed.image.url }}" target="_blank"><img src="{{ embed.image.url }}" alt="Embed's image" class="embed-image"></a>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
