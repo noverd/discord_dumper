@@ -1,7 +1,7 @@
 # Discord Dumper
 
-![Python](https://img.shields.io/badge/python-3.7%2B-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
+![Python](https://img.shields.io/badge/python-3.10%2B-blue)
+[![License](https://img.shields.io/badge/License-Apache%202.0-yellow.svg?logo=apache)](https://opensource.org/licenses/Apache-2.0)
 
 Tool for archiving Discord servers/channels into HTML files with theme support. Preserves messages, attachments, and
 formatting.
